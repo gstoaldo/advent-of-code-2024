@@ -27,17 +27,34 @@ func p1(l1, l2 []int) int {
 	slices.Sort(l1)
 	slices.Sort(l2)
 
-	sum := 0
+	result := 0
 
 	for i := range l1 {
-		sum += utils.Abs(l1[i] - l2[i])
+		result += utils.Abs(l1[i] - l2[i])
 	}
 
-	return sum
+	return result
+}
+
+func p2(l1, l2 []int) int {
+	result := 0
+
+	l2Count := map[int]int{}
+
+	for _, n := range l2 {
+		l2Count[n] += 1
+	}
+
+	for _, n := range l1 {
+		result += n * l2Count[n]
+	}
+
+	return result
 }
 
 func main() {
 	l1, l2 := parse(utils.Filepath())
 
 	fmt.Println(p1(l1, l2))
+	fmt.Println(p2(l1, l2))
 }
