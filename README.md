@@ -7,7 +7,7 @@ https://adventofcode.com/2024
 Change directory to desired day.
 
 ```
-$ cd d01
+$ cd 01
 ```
 
 Run Part 1 and Part 2 solutions with the puzzle input:
