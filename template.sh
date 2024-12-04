@@ -12,10 +12,5 @@ func main() {
 }
 EOF
 
-touch "${DIR}/main_test.go"
-cat > "${DIR}/main_test.go" << EOF
-package main
-EOF
-
 touch "${DIR}/input.txt"
 touch "${DIR}/example1.txt"
