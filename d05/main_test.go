@@ -1,13 +1,17 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+)
 
 func TestRuleIsValid(t *testing.T) {
 	tcs := []struct {
-		r        rule
-		pages    []int
-		i        int
-		expected bool
+		r     rule
+		pages []int
+		i     int
+		want  bool
 	}{
 		{
 			rule{47, 53},
@@ -31,9 +35,25 @@ func TestRuleIsValid(t *testing.T) {
 
 	for _, tc := range tcs {
 		t.Run("", func(t *testing.T) {
-			if valid(tc.r, tc.pages, tc.i) != tc.expected {
+			got, _ := valid(tc.r, tc.pages, tc.i)
+
+			if got != tc.want {
 				t.Fail()
 			}
 		})
+	}
+}
+
+func TestSort(t *testing.T) {
+	rules, _ := parse("example1.txt")
+
+	pages := []int{97, 13, 75, 29, 47}
+
+	sort(rules, pages)
+
+	want := []int{97, 75, 47, 29, 13}
+
+	if !cmp.Equal(pages, want) {
+		t.Fatal(cmp.Diff(want, pages))
 	}
 }
