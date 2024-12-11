@@ -71,6 +71,48 @@ func p1(grid [][]string, i0, j0 int, dir0 string) int {
 	return len(visited)
 }
 
+func p2(grid [][]string, i0, j0 int, dir0 string) (result int) {
+	type pos struct{ i, j, di, dj int }
+
+	for i := range grid {
+		for j := range grid[i] {
+			if i == i0 && j == j0 {
+				continue
+			}
+
+			if grid[i][j] == "#" {
+				continue
+			}
+
+			grid[i][j] = "#" // new obstacle
+
+			g := guard{i0, j0, directions[dir0]}
+
+			visited := map[pos]bool{
+				{g.i, g.j, g.dir[0], g.dir[1]}: true,
+			}
+
+			for g.step(grid) {
+				key := pos{g.i, g.j, g.dir[0], g.dir[1]}
+
+				if visited[key] {
+					// if the guard have been in the same position facing the same direction,
+					// then he is in a loop
+					result++
+					break
+				}
+
+				visited[key] = true
+			}
+
+			grid[i][j] = "." // reset grid
+		}
+	}
+
+	return result
+}
+
 func main() {
 	fmt.Println(p1(parse(utils.Filepath())))
+	fmt.Println(p2(parse(utils.Filepath())))
 }
