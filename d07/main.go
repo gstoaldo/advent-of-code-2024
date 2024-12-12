@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 
 	"github.com/gstoaldo/advent-of-code-2024/utils"
 )
@@ -22,7 +23,7 @@ func parse(f string) (equations [][]int) {
 	return equations
 }
 
-func testEquation(equation []int) bool {
+func testEquation(equation []int, operations []func(a, b int) int) bool {
 	target, numbers := equation[0], equation[1:]
 
 	combinations := []int{numbers[0]}
@@ -31,8 +32,9 @@ func testEquation(equation []int) bool {
 		newCombinations := []int{}
 
 		for _, c := range combinations {
-			newCombinations = append(newCombinations, c+n)
-			newCombinations = append(newCombinations, c*n)
+			for _, op := range operations {
+				newCombinations = append(newCombinations, op(c, n))
+			}
 		}
 		combinations = newCombinations
 	}
@@ -47,8 +49,29 @@ func testEquation(equation []int) bool {
 }
 
 func p1(equations [][]int) (result int) {
+	operations := []func(a, b int) int{
+		func(a, b int) int { return a + b },
+		func(a, b int) int { return a * b },
+	}
+
 	for _, eq := range equations {
-		if testEquation(eq) {
+		if testEquation(eq, operations) {
+			result += eq[0]
+		}
+	}
+
+	return result
+}
+
+func p2(equations [][]int) (result int) {
+	operations := []func(a, b int) int{
+		func(a, b int) int { return a + b },
+		func(a, b int) int { return a * b },
+		func(a, b int) int { return utils.ToInt(strconv.Itoa(a) + strconv.Itoa(b)) },
+	}
+
+	for _, eq := range equations {
+		if testEquation(eq, operations) {
 			result += eq[0]
 		}
 	}
@@ -58,4 +81,5 @@ func p1(equations [][]int) (result int) {
 
 func main() {
 	fmt.Println(p1(parse(utils.Filepath())))
+	fmt.Println(p2(parse(utils.Filepath())))
 }
