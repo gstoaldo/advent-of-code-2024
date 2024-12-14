@@ -34,7 +34,7 @@ func inBounds(M [][]string, l loc) bool {
 	return l.i >= 0 && l.i < len(M) && l.j >= 0 && l.j < len(M[0])
 }
 
-func p1(M [][]string, anthenas map[string][]loc) int {
+func p(M [][]string, anthenas map[string][]loc, harmonics bool) int {
 	antinodes := map[loc]bool{}
 
 	for _, locs := range anthenas {
@@ -44,14 +44,41 @@ func p1(M [][]string, anthenas map[string][]loc) int {
 				di := locs[b].i - locs[a].i
 				dj := locs[b].j - locs[a].j
 
-				antinodeA := loc{locs[a].i + 2*di, locs[a].j + 2*dj}
-				if inBounds(M, antinodeA) {
-					antinodes[antinodeA] = true
+				i := -1
+				if !harmonics {
+					i = 0
 				}
 
-				antinodeB := loc{locs[b].i - 2*di, locs[b].j - 2*dj}
-				if inBounds(M, antinodeB) {
+				for {
+					antinodeA := loc{locs[a].i + di*(2+i), locs[a].j + dj*(2+i)}
+					if !inBounds(M, antinodeA) {
+						break
+					}
+					antinodes[antinodeA] = true
+					i++
+
+					if !harmonics {
+						break
+					}
+				}
+
+				i = -1
+
+				if !harmonics {
+					i = 0
+				}
+
+				for {
+					antinodeB := loc{locs[b].i - di*(2+i), locs[b].j - dj*(2+i)}
+					if !inBounds(M, antinodeB) {
+						break
+					}
 					antinodes[antinodeB] = true
+					i++
+
+					if !harmonics {
+						break
+					}
 				}
 			}
 		}
@@ -61,5 +88,9 @@ func p1(M [][]string, anthenas map[string][]loc) int {
 }
 
 func main() {
-	fmt.Println(p1(parse(utils.Filepath())))
+	M, anthenas := parse(utils.Filepath())
+	fmt.Println(p(M, anthenas, false))
+	fmt.Println(p(M, anthenas, true))
+
+	// 358 too low
 }
